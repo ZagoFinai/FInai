@@ -209,8 +209,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <Shield className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">Painel FinAí - Controle Automático</h1>
-                <p className="text-gray-600 text-sm">Sistema com verificação de status em tempo real</p>
+                <h1 className="text-2xl font-bold text-gray-800">Painel FinAí - Cadastros em Tempo Real</h1>
+                <p className="text-gray-600 text-sm">Sincronização automática de novos cadastros</p>
               </div>
             </div>
             
