@@ -198,9 +198,11 @@ export const addClient = async (clientData: Omit<Client, 'id' | 'registrationDat
         const clients = getClientsFromLocalStorage();
         const updatedClients = [...clients, newClient];
         saveClientsToLocalStorage(updatedClients);
+        console.log('✅ Cliente adicionado ao localStorage:', newClient.name);
         return newClient;
       }
 
+      console.log('✅ Cliente adicionado ao Supabase:', data.name);
       return formatClientFromDB(data);
     } catch (error) {
       console.error('Erro ao conectar com Supabase:', error);
@@ -208,6 +210,7 @@ export const addClient = async (clientData: Omit<Client, 'id' | 'registrationDat
       const clients = getClientsFromLocalStorage();
       const updatedClients = [...clients, newClient];
       saveClientsToLocalStorage(updatedClients);
+      console.log('✅ Cliente adicionado ao localStorage (fallback):', newClient.name);
       return newClient;
     }
   } else {
@@ -215,6 +218,7 @@ export const addClient = async (clientData: Omit<Client, 'id' | 'registrationDat
     const clients = getClientsFromLocalStorage();
     const updatedClients = [...clients, newClient];
     saveClientsToLocalStorage(updatedClients);
+    console.log('✅ Cliente adicionado ao localStorage:', newClient.name);
     return newClient;
   }
 };

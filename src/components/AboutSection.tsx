@@ -34,7 +34,7 @@ export default function AboutSection() {
           Seu assistente financeiro inteligente
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-          FinAí é um sistema automatizado que ajuda você a organizar suas finanças direto pelo WhatsApp.
+          FinAí é um assistente financeiro inteligente que funciona direto no seu WhatsApp. Cadastre-se e comece a usar imediatamente!
         </p>
       </div>
 
@@ -49,11 +49,11 @@ export default function AboutSection() {
             </div>
             
             <h3 className="font-bold text-gray-800 mb-2 group-hover:text-gray-900 transition-colors">
-              {feature.title}
+              Cadastro instantâneo
             </h3>
             
             <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors leading-relaxed">
-              {feature.description}
+              Cadastre-se e vá direto para o WhatsApp
             </p>
           </div>
         ))}
@@ -65,8 +65,8 @@ export default function AboutSection() {
           <h3 className="text-xl font-bold text-gray-800">Integração WhatsApp</h3>
         </div>
         <p className="text-gray-600 text-center leading-relaxed">
-          Toda a gestão financeira acontece diretamente no seu WhatsApp, 
-          com praticidade e segurança que você já conhece.
+          Após o cadastro, você será direcionado automaticamente para o WhatsApp 
+          onde poderá começar a usar o FinAí imediatamente.
         </p>
       </div>
     </div>

@@ -27,18 +27,18 @@ export default function SupportSection() {
               Suporte via WhatsApp
             </h3>
             <p className="text-gray-600 mb-6">
-              Nossa equipe está pronta para te ajudar com qualquer dúvida sobre o cadastro ou uso do sistema.
+              Nossa equipe está pronta para te ajudar com qualquer dúvida sobre o cadastro ou uso do FinAí.
             </p>
           </div>
           
           <a
-            href="https://wa.me/5551994093944"
+            href="https://wa.me/5551994093944?text=Preciso%20de%20ajuda%20com%20o%20FinAí"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:scale-[1.02] shadow-lg group"
           >
             <MessageCircle className="w-6 h-6 mr-3 group-hover:animate-pulse" />
-            👉 Falar com suporte
+            Falar com suporte
             <ExternalLink className="w-4 h-4 ml-2 opacity-60" />
           </a>
         </div>
@@ -50,7 +50,8 @@ export default function SupportSection() {
           </div>
           <p className="text-blue-700 text-center">
             Segunda a Sexta: 8h às 18h<br />
-            Sábado: 8h às 12h
+            Sábado: 8h às 12h<br />
+            <strong>WhatsApp: (51) 99409-3944</strong>
           </p>
         </div>
       </div>

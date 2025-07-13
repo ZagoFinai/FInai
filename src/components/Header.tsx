@@ -33,16 +33,16 @@ export default function Header() {
           
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-blue-100">
-              👋 Cadastro de Cliente
+              👋 Cadastro FinAí
             </h2>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Seja bem-vindo(a) ao FinAí, seu assistente financeiro pessoal direto no WhatsApp
+              Cadastre-se e comece a usar seu assistente financeiro direto no WhatsApp
             </p>
           </div>
           
           <div className="mt-8 inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-8 py-4 text-lg font-medium">
             <Sparkles className="w-5 h-5 mr-3 text-yellow-300" />
-            Preencha o formulário abaixo para ativar sua conta
+            Cadastro rápido e direto para o WhatsApp
           </div>
         </div>
       </div>
