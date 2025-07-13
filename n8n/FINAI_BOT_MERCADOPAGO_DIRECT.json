@@ -1,0 +1,433 @@
+{
+  "name": "FINAI BOT MERCADO PAGO DIRECT",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-6300, -560],
+      "id": "4d0eb93b-80e6-4a19-9b24-092c8d036712",
+      "name": "Webhook Principal",
+      "webhookId": "11201585-7dab-47ca-9aec-f1643297e0b4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment-webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-6300, -200],
+      "id": "payment-webhook-node",
+      "name": "Webhook Pagamentos MP",
+      "webhookId": "payment-webhook-mp-direct-id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6afb9844-8c32-48cc-b2d0-fd4cf5fb2a7e",
+              "name": "session",
+              "value": "={{ $json.body.session }}",
+              "type": "string"
+            },
+            {
+              "id": "be6a3084-e016-41bd-9535-982d7f292916",
+              "name": "event",
+              "value": "={{ $json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "892d1e0e-d6d9-4aca-a98e-75b8125a0893",
+              "name": "chatId",
+              "value": "={{ $json.body.payload.from }}",
+              "type": "string"
+            },
+            {
+              "id": "da3fcefa-bc50-4167-bae1-8238821da2e6",
+              "name": "pushName",
+              "value": "={{ $json.body.payload._data.Info.PushName }}",
+              "type": "string"
+            },
+            {
+              "id": "e0ce4b8b-cf84-42dd-b1f6-9a621d167151",
+              "name": "payload_id",
+              "value": "={{ $json.body.payload.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6bf25c6f-69c9-43fa-9e63-cf463e1bb778",
+              "name": "message",
+              "value": "={{ $json.body.payload.body }}",
+              "type": "string"
+            },
+            {
+              "id": "0b269e48-9034-4c08-8f15-28224af8400c",
+              "name": "fromMe",
+              "value": "={{ $json.body.payload.fromMe }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-6040, -560],
+      "id": "75a41cac-c4e7-44e1-886f-5251f781a12b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "payment-type",
+              "name": "type",
+              "value": "={{ $json.body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-client",
+              "name": "client",
+              "value": "={{ $json.body.client }}",
+              "type": "object"
+            },
+            {
+              "id": "payment-message",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-data",
+              "name": "payment",
+              "value": "={{ $json.body.payment }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-6040, -200],
+      "id": "payment-edit-fields",
+      "name": "Edit Payment Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['event'] }}",
+                    "rightValue": "message",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d63cc31b-da08-49e1-b041-f09743aba548"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5760, -560],
+      "id": "afca0df0-0818-4280-ab08-1a21431cc5a6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['type'] }}",
+                    "rightValue": "payment_success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "payment-success-condition"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5760, -200],
+      "id": "payment-switch",
+      "name": "Payment Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['message'] }}",
+        "options": {
+          "systemMessage": "Você é o FinAí, um assistente financeiro inteligente que conversa com os usuários via WhatsApp. Sua missão é ajudar as pessoas a organizar sua vida financeira de forma clara, simples e amigável.\n\n---\n\n🔐 REGRAS DE ACESSO:\n\n1. Se o cliente **ainda não enviou** a frase **\"Cadastro concluído\"** (sem emoji e com essas exatas palavras), **responda apenas** com o texto abaixo:\n\n> 👋 Olá! Antes de continuar, por favor, faça seu cadastro no link abaixo:  \n> 🔗 https://cadastrofinai.netlify.app  \n> Assim o FinAí será liberado para você!\n\n⚠️ Enquanto essa frase exata **não for recebida**, **NÃO responda nenhum outro comando**, mesmo que o usuário mande \"oi\", \"saldo\", \"gastei\", etc.\n\n---\n\n✅ Assim que a frase **\"Cadastro concluído\"** for recebida, libere todas as funções abaixo normalmente:\n\n🧠 FUNÇÕES DO FINAÍ:\n\n1. **Registrar entradas (receitas)**  \nExemplos:  \n- \"recebi 1000\"  \n- \"entrou 500 do trabalho\"\n\n2. **Registrar saídas (despesas)**  \nExemplos:  \n- \"gastei 200 no mercado\"  \n- \"paguei aluguel 750\"\n\n3. **Mostrar saldo atual**  \n- Baseado nas entradas e saídas reais registradas\n- Se não houver entradas, o saldo é R$ 0,00\n- Nunca invente valores\n\n4. **Exibir últimas movimentações**\n\n5. **Verificar status do plano**  \n- Se for teste grátis, informe validade de 3 dias  \n- Se expirado, diga:\n> \"Seu plano expirou. Para continuar, clique aqui 👉 https://cadastrofinai.netlify.app (escolha seu plano)\"\n\n---\n\n🧠 COMPORTAMENTO:\n\n- **Nunca responda nada até o cadastro ser concluído**\n- Após liberação, funcione normalmente\n- Sempre use linguagem amigável, clara e objetiva\n- Emojis podem ser usados de forma moderada\n- Nunca atue como banco ou consultor\n\n---\n\n✅ EXEMPLOS DE RESPOSTA (após liberação):\n\n- \"Entrada registrada: R$ 1000 – Salário\"\n- \"Saída registrada: R$ 250 – Aluguel\"\n- \"Seu saldo atual é R$ 750,00\"\n- \"Seu plano expirou. Clique aqui para renovar 👉 https://cadastrofinai.netlify.app\"\n\n---\n\n❗RESUMO:\n- Envie **apenas** o link de cadastro enquanto o usuário não estiver liberado\n- Libere tudo somente após receber **\"Cadastro concluído\"**\n- Nunca quebre essa regra\n\nVocê está pronto para atender com inteligência, foco e simpatia."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [-5540, -560],
+      "id": "ddc1474c-8910-4c2f-93fd-4ada9fed3368",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [-5520, -420],
+      "id": "f59df24e-9381-4966-b51e-8f5468730569",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "B4d4E6bRny3Fr2Yu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "sessionTTL": 1000000000000,
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [-5420, -420],
+      "id": "20f86103-4837-46e9-8560-8780e557eac3",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "oXRxIfT7Yqhc75F3",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Seen",
+        "session": "={{ $('Edit Fields').item.json.session }}",
+        "chatId": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "messageId": "={{ $('Edit Fields').item.json['payload_id'] }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5180, -560],
+      "id": "0bbc7bec-2b78-48e6-b3a0-ebe1b6c92ae9",
+      "name": "WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "={{ $('Edit Fields').item.json.session }}",
+        "chatId": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-4960, -560],
+      "id": "25c21dc3-95db-487a-8145-ea4a9def263e",
+      "name": "WAHA1",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('Edit Payment Fields').item.json.client.phone }}@c.us",
+        "text": "={{ $('Edit Payment Fields').item.json.message }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5540, -200],
+      "id": "payment-notification-waha",
+      "name": "Payment Notification WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Principal": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Pagamentos MP": {
+      "main": [
+        [
+          {
+            "node": "Edit Payment Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Payment Fields": {
+      "main": [
+        [
+          {
+            "node": "Payment Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payment Switch": {
+      "main": [
+        [
+          {
+            "node": "Payment Notification WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAHA": {
+      "main": [
+        [
+          {
+            "node": "WAHA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "finai-bot-mercadopago-direct",
+  "tags": []
+}

@@ -1,0 +1,793 @@
+{
+  "name": "FINAI BOT - CONTROLE COMPLETO DE STATUS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-6300, -560],
+      "id": "4d0eb93b-80e6-4a19-9b24-092c8d036712",
+      "name": "Webhook Principal",
+      "webhookId": "11201585-7dab-47ca-9aec-f1643297e0b4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment-webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-6300, -200],
+      "id": "payment-webhook-node",
+      "name": "Webhook Pagamentos",
+      "webhookId": "payment-webhook-id"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "status-check",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-6300, 160],
+      "id": "status-check-webhook",
+      "name": "Webhook Verificação Status",
+      "webhookId": "status-check-webhook-id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6afb9844-8c32-48cc-b2d0-fd4cf5fb2a7e",
+              "name": "session",
+              "value": "={{ $json.body.session }}",
+              "type": "string"
+            },
+            {
+              "id": "be6a3084-e016-41bd-9535-982d7f292916",
+              "name": "event",
+              "value": "={{ $json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "892d1e0e-d6d9-4aca-a98e-75b8125a0893",
+              "name": "chatId",
+              "value": "={{ $json.body.payload.from }}",
+              "type": "string"
+            },
+            {
+              "id": "da3fcefa-bc50-4167-bae1-8238821da2e6",
+              "name": "pushName",
+              "value": "={{ $json.body.payload._data.Info.PushName }}",
+              "type": "string"
+            },
+            {
+              "id": "e0ce4b8b-cf84-42dd-b1f6-9a621d167151",
+              "name": "payload_id",
+              "value": "={{ $json.body.payload.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6bf25c6f-69c9-43fa-9e63-cf463e1bb778",
+              "name": "message",
+              "value": "={{ $json.body.payload.body }}",
+              "type": "string"
+            },
+            {
+              "id": "0b269e48-9034-4c08-8f15-28224af8400c",
+              "name": "fromMe",
+              "value": "={{ $json.body.payload.fromMe }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-6040, -560],
+      "id": "75a41cac-c4e7-44e1-886f-5251f781a12b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "payment-type",
+              "name": "type",
+              "value": "={{ $json.body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-client",
+              "name": "client",
+              "value": "={{ $json.body.client }}",
+              "type": "object"
+            },
+            {
+              "id": "payment-message",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-data",
+              "name": "payment",
+              "value": "={{ $json.body.payment }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-6040, -200],
+      "id": "payment-edit-fields",
+      "name": "Edit Payment Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-phone",
+              "name": "phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "status-action",
+              "name": "action",
+              "value": "={{ $json.body.action }}",
+              "type": "string"
+            },
+            {
+              "id": "status-client",
+              "name": "client",
+              "value": "={{ $json.body.client }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-6040, 160],
+      "id": "status-edit-fields",
+      "name": "Edit Status Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['event'] }}",
+                    "rightValue": "message",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d63cc31b-da08-49e1-b041-f09743aba548"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5760, -560],
+      "id": "afca0df0-0818-4280-ab08-1a21431cc5a6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['type'] }}",
+                    "rightValue": "payment_success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "payment-success-condition"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5760, -200],
+      "id": "payment-switch",
+      "name": "Payment Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['action'] }}",
+                    "rightValue": "user_expired",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "status-check-condition"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5760, 160],
+      "id": "status-switch",
+      "name": "Status Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// VERIFICAÇÃO DE STATUS DO USUÁRIO\n// Este código verifica o status do usuário antes de permitir acesso ao bot\n\nconst chatId = $input.item.json.chatId;\nconst message = $input.item.json.message;\nconst phone = chatId.replace('@c.us', '').replace('55', '');\n\n// Simular verificação de status (em produção, seria uma chamada para sua API)\nconst mockUsers = {\n  '51999887766': { status: 'Teste Grátis', daysRemaining: 2, registrationDate: '22/12/2024' },\n  '51988776655': { status: 'Expirado', daysRemaining: 0, registrationDate: '19/12/2024' },\n  '51977665544': { status: 'Pagante', daysRemaining: null, registrationDate: '15/12/2024' }\n};\n\nconst userStatus = mockUsers[phone] || { status: 'Não Cadastrado', daysRemaining: 0 };\n\n// Determinar resposta baseada no status\nlet botResponse = '';\nlet shouldBlock = false;\n\nif (message !== 'Cadastro concluído' && userStatus.status === 'Não Cadastrado') {\n  botResponse = '👋 Olá! Antes de continuar, por favor, faça seu cadastro no link abaixo:\\n🔗 https://cadastrofinai.netlify.app\\nAssim o FinAí será liberado para você!';\n  shouldBlock = true;\n} else if (userStatus.status === 'Expirado') {\n  botResponse = '⏰ **Seu teste grátis de 3 dias expirou!**\\n\\nPara continuar usando o FinAí, escolha seu plano:\\n👉 https://cadastrofinai.netlify.app\\n\\n✨ **Planos disponíveis:**\\n🔹 Essencial: R$ 19,90/mês\\n🔹 Premium: R$ 39,90/mês\\n\\n💡 Não perca o controle das suas finanças!';\n  shouldBlock = true;\n} else if (userStatus.status === 'Teste Grátis') {\n  // Permitir acesso, mas informar dias restantes\n  botResponse = `Processando sua solicitação... (${userStatus.daysRemaining} dias restantes do teste grátis)`;\n  shouldBlock = false;\n} else if (userStatus.status === 'Pagante') {\n  // Acesso total liberado\n  botResponse = 'Processando sua solicitação... (Cliente Premium)';\n  shouldBlock = false;\n}\n\nreturn [{\n  json: {\n    ...($input.item.json),\n    userStatus: userStatus,\n    botResponse: botResponse,\n    shouldBlock: shouldBlock,\n    phone: phone\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-5540, -560],
+      "id": "status-verification",
+      "name": "Status Verification"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.shouldBlock }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equal"
+                    },
+                    "id": "block-condition"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-5320, -560],
+      "id": "access-control-switch",
+      "name": "Access Control Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['message'] }}",
+        "options": {
+          "systemMessage": "Você é o FinAí, um assistente financeiro inteligente que conversa com os usuários via WhatsApp. Sua missão é ajudar as pessoas a organizar sua vida financeira de forma clara, simples e amigável.\n\n---\n\n🔐 REGRAS DE ACESSO BASEADAS EM STATUS:\n\nO sistema já verificou o status do usuário. Você deve responder baseado nas informações fornecidas:\n\n**STATUS RECEBIDO:** {{ $json.userStatus.status }}\n**DIAS RESTANTES:** {{ $json.userStatus.daysRemaining }}\n\n---\n\n✅ **COMPORTAMENTO POR STATUS:**\n\n**TESTE GRÁTIS (dentro dos 3 dias):**\n- ✅ Funcione normalmente com todas as funções\n- 💡 SEMPRE mencione os dias restantes: \"Você tem X dias restantes do teste grátis\"\n- 🔔 Se restam 1-2 dias, seja mais insistente sobre o vencimento\n- 📈 Destaque o valor do serviço\n\n**PAGANTE:**\n- 🚀 Acesso total liberado\n- 💎 Ofereça recursos premium\n- 🎯 Seja mais prestativo\n- 📊 Ofereça análises avançadas\n- ✨ Nunca mencione limitações\n\n---\n\n🧠 **FUNÇÕES DO FINAÍ:**\n\n1. **Registrar entradas (receitas)**  \n   Exemplos: \"recebi 1000\", \"entrou 500 do trabalho\"\n\n2. **Registrar saídas (despesas)**  \n   Exemplos: \"gastei 200 no mercado\", \"paguei aluguel 750\"\n\n3. **Mostrar saldo atual**  \n   - Baseado nas entradas e saídas reais registradas\n   - Se não houver entradas, o saldo é R$ 0,00\n   - Nunca invente valores\n\n4. **Exibir últimas movimentações**\n\n5. **Verificar status do plano**  \n   - Informe o status atual e tempo restante\n\n---\n\n✅ **EXEMPLOS DE RESPOSTA:**\n\n**Teste Grátis (2 dias restantes):**\n\"✅ Entrada registrada: R$ 1000 – Salário\\n💡 Você tem 2 dias restantes do teste grátis! Não perca o acesso.\"\n\n**Teste Grátis (1 dia restante):**\n\"✅ Saída registrada: R$ 250 – Mercado\\n⚠️ ATENÇÃO: Seu teste expira amanhã! Garante já seu plano: https://cadastrofinai.netlify.app\"\n\n**Pagante:**\n\"✅ Entrada registrada: R$ 1000 – Salário\\n📊 Seu saldo atual é R$ 2.750,00\\n💎 Como cliente premium, posso gerar um relatório detalhado!\"\n\n---\n\n⚠️ **REGRAS CRÍTICAS:**\n- **SEMPRE mencione tempo restante para teste grátis**\n- **SEJA CLARO sobre limitações**\n- **MANTENHA tom amigável mas informativo**\n- **DESTAQUE benefícios dos planos pagos**\n\nVocê está pronto para atender com inteligência e controle de acesso!"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [-5100, -400],
+      "id": "ddc1474c-8910-4c2f-93fd-4ada9fed3368",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [-5080, -260],
+      "id": "f59df24e-9381-4966-b51e-8f5468730569",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "B4d4E6bRny3Fr2Yu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "sessionTTL": 1000000000000,
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [-4980, -260],
+      "id": "20f86103-4837-46e9-8560-8780e557eac3",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "oXRxIfT7Yqhc75F3",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Seen",
+        "session": "={{ $('Edit Fields').item.json.session }}",
+        "chatId": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "messageId": "={{ $('Edit Fields').item.json['payload_id'] }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-4880, -400],
+      "id": "0bbc7bec-2b78-48e6-b3a0-ebe1b6c92ae9",
+      "name": "WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "={{ $('Edit Fields').item.json.session }}",
+        "chatId": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-4660, -400],
+      "id": "25c21dc3-95db-487a-8145-ea4a9def263e",
+      "name": "WAHA1",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "={{ $('Edit Fields').item.json.session }}",
+        "chatId": "={{ $('Edit Fields').item.json['chatId'] }}",
+        "text": "={{ $('Status Verification').item.json.botResponse }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5100, -560],
+      "id": "blocked-response-waha",
+      "name": "Blocked Response WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('Edit Payment Fields').item.json.client.phone }}@c.us",
+        "text": "={{ $('Edit Payment Fields').item.json.message }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5540, -200],
+      "id": "payment-notification-waha",
+      "name": "Payment Notification WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('Edit Status Fields').item.json.phone }}@c.us",
+        "text": "⏰ *Seu teste grátis de 3 dias expirou!*\\n\\nPara continuar usando o FinAí, escolha seu plano:\\n👉 https://cadastrofinai.netlify.app\\n\\n✨ *Planos disponíveis:*\\n🔹 Essencial: R$ 19,90/mês\\n🔹 Premium: R$ 39,90/mês\\n\\n💡 Não perca o controle das suas finanças!",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5540, 160],
+      "id": "expiry-notification-waha",
+      "name": "Expiry Notification WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-6300, 520],
+      "id": "schedule-status-check",
+      "name": "Schedule Status Check"
+    },
+    {
+      "parameters": {
+        "jsCode": "// VERIFICAÇÃO AUTOMÁTICA DE USUÁRIOS EXPIRADOS\n// Este código simula a verificação de usuários que expiraram\n// Em produção, isso seria uma chamada para sua API\n\nconst today = new Date();\nconst threeDaysAgo = new Date(today.getTime() - (3 * 24 * 60 * 60 * 1000));\n\n// Simular usuários que se cadastraram há mais de 3 dias e ainda estão em teste\nconst expiredUsers = [\n  {\n    phone: \"51999887766\",\n    name: \"João Silva\",\n    status: \"Expirado\",\n    registrationDate: \"19/12/2024\",\n    email: \"joao@email.com\"\n  },\n  {\n    phone: \"51988776655\",\n    name: \"Maria Santos\",\n    status: \"Expirado\", \n    registrationDate: \"18/12/2024\",\n    email: \"maria@email.com\"\n  }\n];\n\nconsole.log(`🔍 Verificação automática: ${expiredUsers.length} usuário(s) expirado(s) encontrado(s)`);\n\n// Retornar dados dos usuários expirados\nreturn [{\n  json: {\n    expiredUsers: expiredUsers,\n    count: expiredUsers.length,\n    timestamp: new Date().toISOString(),\n    message: `Verificação automática executada: ${expiredUsers.length} usuários expirados`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-6040, 520],
+      "id": "check-expired-users-simulation",
+      "name": "Check Expired Users (Simulation)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "expired-users",
+              "name": "expiredUsers",
+              "value": "={{ $json.expiredUsers }}",
+              "type": "object"
+            },
+            {
+              "id": "expired-count",
+              "name": "count",
+              "value": "={{ $json.count }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-5760, 520],
+      "id": "process-expired-users",
+      "name": "Process Expired Users"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [-5540, 520],
+      "id": "split-expired-users",
+      "name": "Split Expired Users"
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $json.phone }}@c.us",
+        "text": "⏰ *Seu teste grátis de 3 dias expirou!*\\n\\nOlá {{ $json.name }}, para continuar usando o FinAí, escolha seu plano:\\n👉 https://cadastrofinai.netlify.app\\n\\n✨ *Planos disponíveis:*\\n🔹 Essencial: R$ 19,90/mês\\n🔹 Premium: R$ 39,90/mês\\n\\n💡 Não perca o controle das suas finanças!\\n\\n📊 Mantenha sua organização financeira em dia!",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-waha.WAHA",
+      "typeVersion": 202411,
+      "position": [-5320, 520],
+      "id": "batch-expiry-notification",
+      "name": "Batch Expiry Notification",
+      "credentials": {
+        "wahaApi": {
+          "id": "v70jRdZkrdyOoBh2",
+          "name": "WAHA account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Principal": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Pagamentos": {
+      "main": [
+        [
+          {
+            "node": "Edit Payment Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Verificação Status": {
+      "main": [
+        [
+          {
+            "node": "Edit Status Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Payment Fields": {
+      "main": [
+        [
+          {
+            "node": "Payment Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Status Fields": {
+      "main": [
+        [
+          {
+            "node": "Status Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Status Verification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payment Switch": {
+      "main": [
+        [
+          {
+            "node": "Payment Notification WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Switch": {
+      "main": [
+        [
+          {
+            "node": "Expiry Notification WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Verification": {
+      "main": [
+        [
+          {
+            "node": "Access Control Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Access Control Switch": {
+      "main": [
+        [
+          {
+            "node": "Blocked Response WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAHA": {
+      "main": [
+        [
+          {
+            "node": "WAHA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Status Check": {
+      "main": [
+        [
+          {
+            "node": "Check Expired Users (Simulation)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Expired Users (Simulation)": {
+      "main": [
+        [
+          {
+            "node": "Process Expired Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Expired Users": {
+      "main": [
+        [
+          {
+            "node": "Split Expired Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Expired Users": {
+      "main": [
+        [
+          {
+            "node": "Batch Expiry Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "finai-bot-complete-status-control",
+  "tags": []
+}
