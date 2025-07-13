@@ -18,6 +18,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [isProcessingStatus, setIsProcessingStatus] = useState(false);
   const [lastStatusUpdate, setLastStatusUpdate] = useState<Date | null>(null);
   const [expiredUsersCount, setExpiredUsersCount] = useState(0);
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
   // Verificar se Supabase está configurado
   useEffect(() => {
@@ -39,7 +40,13 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         await migrateLocalStorageToSupabase();
       }
       
-      const clientsData = await getClients();
+      // Função de callback para sincronização em tempo real
+      const handleClientsUpdate = (updatedClients: Client[]) => {
+        setClients(updatedClients);
+        console.log('🔄 Dados sincronizados automaticamente:', updatedClients.length, 'clientes');
+      };
+      
+      const clientsData = await getClients(handleClientsUpdate);
       setClients(clientsData);
       setIsLoading(false);
     };
@@ -47,14 +54,24 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     // Carregar inicialmente
     loadClients();
 
-    // Atualizar a cada 5 segundos para capturar novos cadastros e pagamentos
-    const interval = setInterval(async () => {
-      const clientsData = await getClients();
-      setClients(clientsData);
-    }, 5000);
+    // Atualizar a cada 3 segundos se auto-refresh estiver ativo
+    let interval: NodeJS.Timeout;
+    
+    if (autoRefresh) {
+      interval = setInterval(async () => {
+        try {
+          const clientsData = await getClients();
+          setClients(clientsData);
+        } catch (error) {
+          console.error('Erro na atualização automática:', error);
+        }
+      }, 3000);
+    }
 
-    return () => clearInterval(interval);
-  }, [isSupabaseConnected]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isSupabaseConnected, autoRefresh]);
 
   // Processar atualizações automáticas de status a cada 30 segundos
   useEffect(() => {
@@ -215,6 +232,19 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </div>
             
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoRefresh}
+                    onChange={(e) => setAutoRefresh(e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Auto-sync</span>
+                </label>
+                <div className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              </div>
+              
               {expiredUsersCount > 0 && (
                 <div className="flex items-center bg-red-50 border border-red-200 rounded-xl px-4 py-2">
                   <Bell className="w-4 h-4 text-red-600 mr-2 animate-pulse" />
@@ -498,6 +528,45 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             {client.status}
                           </span>
                           
+                          {/* Mostrar dias restantes */}
+                          {client.daysRemaining !== undefined && (
+                            <div className={`text-xs px-2 py-1 rounded border ${
+                              client.status === 'Teste Grátis' 
+                                ? client.daysRemaining <= 1 
+                                  ? 'bg-red-50 text-red-700 border-red-200' 
+                                  : 'bg-blue-50 text-blue-700 border-blue-200'
+                                : client.status === 'Pagante'
+                                ? 'bg-green-50 text-green-700 border-green-200'
+                                : 'bg-gray-50 text-gray-700 border-gray-200'
+                            }`}>
+                              {client.status === 'Teste Grátis' && (
+                                <>
+                                  <Clock className="w-3 h-3 inline mr-1" />
+                                  {client.daysRemaining} dia(s) restantes
+                                </>
+                              )}
+                              {client.status === 'Pagante' && (
+                                <>
+                                  <CheckCircle className="w-3 h-3 inline mr-1" />
+                                  {client.daysRemaining} dia(s) restantes
+                                </>
+                              )}
+                              {client.status === 'Expirado' && (
+                                <>
+                                  <AlertTriangle className="w-3 h-3 inline mr-1" />
+                                  Expirado
+                                </>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* Data de expiração */}
+                          {client.expirationDate && (
+                            <div className="text-xs text-gray-500">
+                              Expira em: {client.expirationDate}
+                            </div>
+                          )}
+                          
                           {statusInfo.willChange && (
                             <div className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-200">
                               <Clock className="w-3 h-3 inline mr-1" />
@@ -601,10 +670,19 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="flex items-center space-x-2 text-sm text-gray-500">
                 <div className={`w-2 h-2 rounded-full animate-pulse ${
-                  isProcessingStatus ? 'bg-orange-500' : 'bg-green-500'
+                  autoRefresh 
+                    ? isProcessingStatus 
+                      ? 'bg-orange-500' 
+                      : 'bg-green-500'
+                    : 'bg-gray-400'
                 }`}></div>
                 <span>
-                  {isProcessingStatus ? 'Verificando status...' : 'Sistema ativo'}
+                  {!autoRefresh 
+                    ? 'Auto-sync desabilitado' 
+                    : isProcessingStatus 
+                      ? 'Verificando status...' 
+                      : 'Sistema sincronizado'
+                  }
                 </span>
               </div>
             </div>
